@@ -2,12 +2,9 @@
 
 
 [[projects]]
-  digest = "1:484f9c39ef481b516dd78918feb90525ce55c03932878c090461b3cbccb631e9"
+  digest = "1:05ffeeed3f0f05520de0679f6aa3219ffee69cfd6d9fb6c194879d4c818ad670"
   name = "github.com/coreos/go-semver"
-  packages = [
-    ".",
-    "semver",
-  ]
+  packages = ["semver"]
   pruneopts = "UT"
   revision = "e214231b295a8ea9479f11b70b35d5acf3556d9b"
   version = "v0.3.0"
@@ -228,7 +225,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/coreos/go-semver",
+    "github.com/coreos/go-semver/semver",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
     "golang.org/x/sys/windows/registry",

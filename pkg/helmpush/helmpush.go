@@ -12,38 +12,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package helmspray
+package helmpush
 
 import (
-	"fmt"
-	"os"
-	"os/exec"
-
 	"github.com/gemalto/gokube/pkg/download"
 	"github.com/gemalto/gokube/pkg/gokube"
 	"github.com/gemalto/gokube/pkg/utils"
+	"os"
 )
 
 const (
-	URL = "https://github.com/gemalto/helm-spray/releases/download/%s/helm-spray-windows-amd64.tar.gz"
+	URL = "https://github.com/chartmuseum/helm-push/releases/download/v%s/helm-push_%s_windows_amd64.tar.gz"
 )
 
-//Version ...
-func Version() {
-	fmt.Print("helm plugins version: ")
-	cmd := exec.Command("helm", "plugin", "list")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Run()
-}
-
 // InstallPlugin ...
-func InstallPlugin(helmSprayVersion string) {
-	var pluginHome = utils.GetUserHome() + "/.helm/plugins/helm-spray"
+func InstallPlugin(helmPushVersion string) {
+	if helmPushVersion[0] == 118 {
+		helmPushVersion = helmPushVersion[1:]
+	}
+	var pluginHome = utils.GetUserHome() + "/.helm/plugins/helm-push"
 	utils.CreateDir(pluginHome)
-	if _, err := os.Stat(pluginHome + "/helm-spray.exe"); os.IsNotExist(err) {
-		download.DownloadFromUrl("helm-spray "+helmSprayVersion, URL, helmSprayVersion)
-		utils.MoveFile(gokube.GetTempDir()+"/helm-spray.exe", pluginHome+"/helm-spray.exe")
+	utils.CreateDir(pluginHome + "/bin")
+	if _, err := os.Stat(pluginHome + "/bin/helmpush.exe"); os.IsNotExist(err) {
+		download.DownloadFromUrl("helm-push v"+helmPushVersion, URL, helmPushVersion)
+		utils.MoveFile(gokube.GetTempDir()+"/bin/helmpush.exe", pluginHome+"/bin/helmpush.exe")
 		utils.MoveFile(gokube.GetTempDir()+"/plugin.yaml", pluginHome+"/plugin.yaml")
 		utils.RemoveDir(gokube.GetTempDir())
 	}
@@ -51,7 +43,7 @@ func InstallPlugin(helmSprayVersion string) {
 
 // DeletePlugin ...
 func DeletePlugin() {
-	var pluginHome = utils.GetUserHome() + "/.helm/plugins/helm-spray"
+	var pluginHome = utils.GetUserHome() + "/.helm/plugins/helm-push"
 	_, err := os.Stat(pluginHome)
 	if os.IsNotExist(err) {
 		return

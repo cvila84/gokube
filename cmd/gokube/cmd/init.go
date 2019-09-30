@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/gemalto/gokube/pkg/helmpush"
 	"log"
 	"os"
 	"strings"
@@ -48,6 +49,7 @@ var kubernetesVersion string
 var kubectlVersion string
 var helmVersion string
 var helmSprayVersion string
+var helmPushVersion string
 var sternVersion string
 var memory int16
 var cpus int16
@@ -94,7 +96,8 @@ func init() {
 	initCmd.Flags().StringVarP(&kubernetesVersion, "kubernetes-version", "", defaultKubernetesVersion, "The kubernetes version")
 	initCmd.Flags().StringVarP(&kubectlVersion, "kubectl-version", "", defaultKubectlVersion, "The kubectl version")
 	initCmd.Flags().StringVarP(&helmVersion, "helm-version", "", "v2.13.1", "The helm version")
-	initCmd.Flags().StringVarP(&helmSprayVersion, "helm-spray-version", "", "v3.4.4", "The helm version")
+	initCmd.Flags().StringVarP(&helmSprayVersion, "helm-spray-version", "", "v3.4.4", "The helm spray plugin version")
+	initCmd.Flags().StringVarP(&helmPushVersion, "helm-push-version", "", "v0.7.1", "The helm push plugin version")
 	initCmd.Flags().StringVarP(&sternVersion, "stern-version", "", "1.10.0", "The stern version")
 	initCmd.Flags().Int16VarP(&memory, "memory", "", int16(8192), "Amount of RAM allocated to the minikube VM in MB")
 	initCmd.Flags().Int16VarP(&cpus, "cpus", "", int16(4), "Number of CPUs allocated to the minikube VM")
@@ -139,6 +142,11 @@ func initRun(cmd *cobra.Command, args []string) {
 	if len(args) > 0 {
 		log.Fatalln("usage: gokube init")
 	}
+
+	helmpush.DeletePlugin()
+	helmpush.InstallPlugin(helmPushVersion)
+
+	os.Exit(1)
 
 	// TODO add manifest to ask for admin rights
 	fmt.Println("Deleting previous minikube VM...")
